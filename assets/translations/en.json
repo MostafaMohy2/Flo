@@ -1,0 +1,182 @@
+{
+  "app": { "title": "Flo" },
+
+  "onboarding": {
+    "title": "Your money,\nfinally clear.",
+    "subtitle": "Track expenses, spot unusual spending, and ask your AI assistant anything about your finances.",
+    "get_started": "Get Started",
+    "have_account": "I already have an account",
+    "tagline": "Your money, finally clear"
+  },
+
+  "home": {
+    "greeting": "Good morning",
+    "overview": "Your Overview",
+    "total_balance": "Total Balance",
+    "income": "Income",
+    "expenses": "Expenses",
+    "recent_transactions": "Recent Transactions",
+    "see_all": "See all",
+    "empty_transactions": "No transactions yet",
+    "view_details": "View Details →",
+    "nav_home": "Home",
+    "nav_analytics": "Analytics",
+    "nav_ai": "AI Assistant",
+    "nav_profile": "Profile"
+  },
+
+  "transactions": {
+    "title": "Transactions",
+    "search_hint": "Search transactions...",
+    "no_results": "No transactions found",
+    "empty": "No transactions found",
+    "filter_all": "All"
+  },
+
+  "add_expense": {
+    "title": "Add Transaction",
+    "manual": "Manual",
+    "scan_receipt": "Scan Receipt",
+    "expense": "Expense",
+    "income": "Income",
+    "merchant_label": "Merchant / Description",
+    "category": "Category",
+    "note_label": "Note (optional)",
+    "save": "Save Transaction",
+    "scan_hint": "Tap to scan receipt",
+    "scan_subtitle": "Camera will open",
+    "amount_invalid": "Please enter a valid amount",
+    "merchant_required": "Please enter a merchant name"
+  },
+
+  "analytics": {
+    "title": "Analytics",
+    "last_6_months": "Last 6 Months",
+    "spending_by_category": "Spending by Category",
+    "top_categories": "Top Categories",
+    "ai_insight": "AI Insight",
+    "ai_insight_message": "Your top spending category is {} at {}% of total expenses.",
+    "ai_insight_empty": "Add transactions to see insights.",
+    "no_data": "No data",
+    "load_error": "Could not load analytics."
+  },
+
+  "ai": {
+    "title": "Ask Flo AI",
+    "empty_title": "Ask me anything\nabout your spending",
+    "empty_subtitle": "I can answer questions about your transactions, budget, and spending habits.",
+    "try_asking": "Try asking:",
+    "suggestion_1": "How much did I spend on food last month?",
+    "suggestion_2": "Am I on track with my budget this month?",
+    "suggestion_3": "What is my biggest expense category?",
+    "suggestion_4": "How much did I spend last week?",
+    "input_hint": "Ask about your spending..."
+  },
+
+  "anomaly": {
+    "title": "Unusual Activity",
+    "detected_title": "Unusual Spending Detected",
+    "category_prefix": "in {}",
+    "comparison_title": "This Week vs Average",
+    "this_week": "This week",
+    "four_week_avg": "4-week average",
+    "increase": "Increase",
+    "set_budget": "Set Budget Limit",
+    "dismiss": "Dismiss Alert"
+  },
+
+  "scan_receipt": {
+    "title": "Scan Receipt",
+    "coming_soon": "Receipt Scanner — coming soon"
+  },
+
+  "profile": {
+    "title": "Profile",
+    "account_fallback": "Your Account",
+    "budget_section": "BUDGET",
+    "monthly_budget": "Monthly Budget",
+    "currency_section": "CURRENCY",
+    "preferences_section": "PREFERENCES",
+    "settings_tile": "App Settings",
+    "notifications_section": "NOTIFICATIONS",
+    "ai_alerts_title": "AI Spending Alerts",
+    "ai_alerts_subtitle": "Get notified on unusual spending",
+    "weekly_summary_title": "Weekly Summary",
+    "weekly_summary_subtitle": "Spending recap every Monday",
+    "budget_warnings_title": "Budget Warnings",
+    "budget_warnings_subtitle": "Alert when nearing budget limit",
+    "data_section": "DATA",
+    "clear_transactions": "Clear All Transactions",
+    "settings_saved": "Settings saved",
+    "save_settings": "Save Settings",
+    "logout": "Log out",
+    "clear_title": "Clear all transactions?",
+    "clear_subtitle": "This cannot be undone.",
+    "cancel": "Cancel",
+    "clear": "Clear",
+    "clearing": "Clearing transactions...",
+    "cleared_success": "All transactions cleared",
+    "take_photo": "Take photo",
+    "pick_gallery": "Choose from gallery",
+    "remove_photo": "Remove photo"
+  },
+
+  "settings": {
+    "title": "Settings",
+    "theme": "THEME",
+    "dark": "Dark mode",
+    "light": "Light mode",
+    "language": "LANGUAGE",
+    "english": "English",
+    "arabic": "Arabic",
+    "data_section": "DATA",
+    "clear_transactions": "Clear All Transactions",
+    "clear_tile_subtitle": "Remove every transaction from this device",
+    "clear_title": "Clear all transactions?",
+    "clear_subtitle": "This action cannot be undone.",
+    "type_confirm_label": "Type CLEAR to confirm",
+    "type_confirm_hint": "CLEAR",
+    "type_confirm_error": "Please type CLEAR to continue",
+    "clear_confirm": "Clear",
+    "clearing": "Clearing transactions...",
+    "cleared_success": "All transactions cleared",
+    "undo": "Undo",
+    "undo_success": "Transactions restored"
+  },
+
+  "auth": {
+    "sign_in": "Sign In",
+    "sign_in_subtitle": "Sign in to your account",
+    "create_account": "Create an account",
+    "create_account_title": "Create account",
+    "create_account_subtitle": "Start tracking your finances with Flo.",
+    "email": "Email",
+    "email_hint": "you@example.com",
+    "email_required": "Email is required",
+    "email_invalid": "Enter a valid email",
+    "password": "Password",
+    "password_hint": "••••••••",
+    "password_required": "Password is required",
+    "password_length": "Password must be at least 6 characters",
+    "full_name": "Full name",
+    "full_name_hint": "Ahmed Hassan",
+    "name_required": "Name is required",
+    "name_short": "Name is too short",
+    "confirm_password": "Confirm password",
+    "confirm_required": "Please confirm your password",
+    "password_mismatch": "Passwords do not match",
+    "have_account": "Already have an account?",
+    "no_account": "Don't have an account?",
+    "or": "or",
+    "tagline": "Your money, finally clear."
+  },
+
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "error": "Something went wrong",
+    "retry": "Try again",
+    "loading": "Loading..."
+  }
+}

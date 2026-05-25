@@ -1,0 +1,182 @@
+{
+  "app": { "title": "فلو" },
+
+  "onboarding": {
+    "title": "أموالك،\nواضحة أخيراً.",
+    "subtitle": "تتبع مصروفاتك، واكتشف الإنفاق غير المعتاد، واسأل مساعدك الذكي عن أي شيء يخص أموالك.",
+    "get_started": "ابدأ الآن",
+    "have_account": "لدي حساب بالفعل",
+    "tagline": "أموالك، واضحة أخيراً"
+  },
+
+  "home": {
+    "greeting": "صباح الخير",
+    "overview": "نظرة عامة",
+    "total_balance": "الرصيد الإجمالي",
+    "income": "الدخل",
+    "expenses": "المصروفات",
+    "recent_transactions": "المعاملات الأخيرة",
+    "see_all": "عرض الكل",
+    "empty_transactions": "لا توجد معاملات بعد",
+    "view_details": "عرض التفاصيل ←",
+    "nav_home": "الرئيسية",
+    "nav_analytics": "التحليلات",
+    "nav_ai": "مساعد الذكاء",
+    "nav_profile": "الملف الشخصي"
+  },
+
+  "transactions": {
+    "title": "المعاملات",
+    "search_hint": "بحث في المعاملات...",
+    "no_results": "لم يتم العثور على معاملات",
+    "empty": "لم يتم العثور على معاملات",
+    "filter_all": "الكل"
+  },
+
+  "add_expense": {
+    "title": "إضافة معاملة",
+    "manual": "يدوي",
+    "scan_receipt": "مسح الإيصال",
+    "expense": "مصروف",
+    "income": "دخل",
+    "merchant_label": "التاجر / الوصف",
+    "category": "الفئة",
+    "note_label": "ملاحظة (اختياري)",
+    "save": "حفظ المعاملة",
+    "scan_hint": "اضغط لمسح الإيصال",
+    "scan_subtitle": "سيتم فتح الكاميرا",
+    "amount_invalid": "يرجى إدخال مبلغ صحيح",
+    "merchant_required": "يرجى إدخال اسم التاجر"
+  },
+
+  "analytics": {
+    "title": "التحليلات",
+    "last_6_months": "آخر 6 أشهر",
+    "spending_by_category": "الإنفاق حسب الفئة",
+    "top_categories": "أعلى الفئات",
+    "ai_insight": "تحليل الذكاء الاصطناعي",
+    "ai_insight_message": "أعلى فئة إنفاق لديك هي {} بنسبة {}% من إجمالي المصروفات.",
+    "ai_insight_empty": "أضف معاملات لرؤية التحليلات.",
+    "no_data": "لا توجد بيانات",
+    "load_error": "تعذر تحميل التحليلات."
+  },
+
+  "ai": {
+    "title": "اسأل فلو",
+    "empty_title": "اسألني أي شيء\nعن إنفاقك",
+    "empty_subtitle": "يمكنني الإجابة على أسئلة حول معاملاتك وميزانيتك وعادات الإنفاق.",
+    "try_asking": "جرب أن تسأل:",
+    "suggestion_1": "كم أنفقت على الطعام الشهر الماضي؟",
+    "suggestion_2": "هل أنا في المسار الصحيح مع ميزانيتي؟",
+    "suggestion_3": "ما هي أكبر فئة إنفاق لدي؟",
+    "suggestion_4": "كم أنفقت الأسبوع الماضي؟",
+    "input_hint": "اسأل عن إنفاقك..."
+  },
+
+  "anomaly": {
+    "title": "نشاط غير معتاد",
+    "detected_title": "تم اكتشاف إنفاق غير عادي",
+    "category_prefix": "في {}",
+    "comparison_title": "هذا الأسبوع مقابل المتوسط",
+    "this_week": "هذا الأسبوع",
+    "four_week_avg": "متوسط 4 أسابيع",
+    "increase": "الزيادة",
+    "set_budget": "تحديد حد الميزانية",
+    "dismiss": "تجاهل التنبيه"
+  },
+
+  "scan_receipt": {
+    "title": "مسح الإيصال",
+    "coming_soon": "ماسح الإيصالات — قريباً"
+  },
+
+  "profile": {
+    "title": "الملف الشخصي",
+    "account_fallback": "حسابك",
+    "budget_section": "الميزانية",
+    "monthly_budget": "الميزانية الشهرية",
+    "currency_section": "العملة",
+    "preferences_section": "التفضيلات",
+    "settings_tile": "إعدادات التطبيق",
+    "notifications_section": "الإشعارات",
+    "ai_alerts_title": "تنبيهات الإنفاق الذكية",
+    "ai_alerts_subtitle": "إشعار عند الإنفاق غير العادي",
+    "weekly_summary_title": "الملخص الأسبوعي",
+    "weekly_summary_subtitle": "ملخص الإنفاق كل يوم اثنين",
+    "budget_warnings_title": "تحذيرات الميزانية",
+    "budget_warnings_subtitle": "تنبيه عند الاقتراب من حد الميزانية",
+    "data_section": "البيانات",
+    "clear_transactions": "مسح جميع المعاملات",
+    "settings_saved": "تم حفظ الإعدادات",
+    "save_settings": "حفظ الإعدادات",
+    "logout": "تسجيل الخروج",
+    "clear_title": "مسح جميع المعاملات؟",
+    "clear_subtitle": "لا يمكن التراجع عن هذا الإجراء.",
+    "cancel": "إلغاء",
+    "clear": "مسح",
+    "clearing": "جارٍ مسح العمليات...",
+    "cleared_success": "تم مسح جميع العمليات",
+    "take_photo": "التقاط صورة",
+    "pick_gallery": "اختيار من المعرض",
+    "remove_photo": "إزالة الصورة"
+  },
+
+  "settings": {
+    "title": "الإعدادات",
+    "theme": "المظهر",
+    "dark": "الوضع الداكن",
+    "light": "الوضع الفاتح",
+    "language": "اللغة",
+    "english": "English",
+    "arabic": "العربية",
+    "data_section": "البيانات",
+    "clear_transactions": "مسح جميع المعاملات",
+    "clear_tile_subtitle": "إزالة جميع المعاملات من هذا الجهاز",
+    "clear_title": "مسح جميع المعاملات؟",
+    "clear_subtitle": "لا يمكن التراجع عن هذا الإجراء.",
+    "type_confirm_label": "اكتب CLEAR للتأكيد",
+    "type_confirm_hint": "CLEAR",
+    "type_confirm_error": "يرجى كتابة CLEAR للمتابعة",
+    "clear_confirm": "مسح",
+    "clearing": "جارٍ مسح العمليات...",
+    "cleared_success": "تم مسح جميع العمليات",
+    "undo": "تراجع",
+    "undo_success": "تمت استعادة العمليات"
+  },
+
+  "auth": {
+    "sign_in": "تسجيل الدخول",
+    "sign_in_subtitle": "سجّل دخولك إلى حسابك",
+    "create_account": "إنشاء حساب جديد",
+    "create_account_title": "إنشاء حساب",
+    "create_account_subtitle": "ابدأ تتبع أموالك مع فلو.",
+    "email": "البريد الإلكتروني",
+    "email_hint": "you@example.com",
+    "email_required": "البريد الإلكتروني مطلوب",
+    "email_invalid": "أدخل بريدًا إلكترونيًا صحيحًا",
+    "password": "كلمة المرور",
+    "password_hint": "••••••••",
+    "password_required": "كلمة المرور مطلوبة",
+    "password_length": "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
+    "full_name": "الاسم الكامل",
+    "full_name_hint": "أحمد حسن",
+    "name_required": "الاسم مطلوب",
+    "name_short": "الاسم قصير جداً",
+    "confirm_password": "تأكيد كلمة المرور",
+    "confirm_required": "يرجى تأكيد كلمة المرور",
+    "password_mismatch": "كلمتا المرور غير متطابقتين",
+    "have_account": "لديك حساب بالفعل؟",
+    "no_account": "ليس لديك حساب؟",
+    "or": "أو",
+    "tagline": "أموالك، واضحة أخيراً."
+  },
+
+  "common": {
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "delete": "حذف",
+    "error": "حدث خطأ ما",
+    "retry": "حاول مجدداً",
+    "loading": "جاري التحميل..."
+  }
+}
