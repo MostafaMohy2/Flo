@@ -161,7 +161,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   textAlign: TextAlign.center,
                   style: AppTextStyles.balanceLarge(palette.textPrimary),
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: '0.00',
                     prefixText: '\$ ',
                     border: InputBorder.none,

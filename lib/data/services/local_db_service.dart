@@ -1,205 +1,192 @@
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+import 'dart:convert';
+import 'package:hive_flutter/hive_flutter.dart';
 import '../models/transaction.dart' as model;
 import '../models/user.dart';
 
 class LocalDbService {
-  static Database? _db;
+  static const _txBox       = 'transactions_v2';
+  static const _settingsBox = 'settings_v2';
+  static const _usersBox    = 'users_v2';
 
-  Future<Database> get database async {
-    _db ??= await _initDb();
-    return _db!;
+  static bool _initialized = false;
+
+  /// Call once in main() before runApp.
+  static Future<void> init() async {
+    if (_initialized) return;
+    await Hive.initFlutter();
+
+    // All boxes store JSON strings — Hive handles String natively on web
+    await Hive.openBox<String>(_txBox);
+    await Hive.openBox<String>(_settingsBox);
+    await Hive.openBox<String>(_usersBox);
+
+    // Write default settings only on fresh install
+    final s = Hive.box<String>(_settingsBox);
+    await _putIfAbsent(s, 'currency',               'USD');
+    await _putIfAbsent(s, 'monthly_budget',         '3000');
+    await _putIfAbsent(s, 'ai_alerts_enabled',      'true');
+    await _putIfAbsent(s, 'weekly_summary_enabled', 'true');
+    await _putIfAbsent(s, 'last_anomaly_check',     '');
+    await _putIfAbsent(s, 'current_user_id',        '');
+    await _putIfAbsent(s, 'theme_mode',             'light');
+
+    _initialized = true;
   }
 
-  Future<Database> _initDb() async {
-    final dbPath = await getDatabasesPath();
-    final path   = join(dbPath, 'flo.db');
-
-    return openDatabase(
-      path,
-      version: 2,
-      onCreate: _onCreate,
-      onUpgrade: _onUpgrade,
-    );
-  }
-
-  Future<void> _onCreate(Database db, int version) async {
-    await db.execute('''
-      CREATE TABLE transactions (
-        id           TEXT PRIMARY KEY,
-        merchantName TEXT NOT NULL,
-        amount       REAL NOT NULL,
-        type         TEXT NOT NULL,
-        category     TEXT NOT NULL,
-        date         TEXT NOT NULL,
-        note         TEXT,
-        isFlagged    INTEGER NOT NULL DEFAULT 0
-      )
-    ''');
-
-    await db.execute('''
-      CREATE TABLE settings (
-        key   TEXT PRIMARY KEY,
-        value TEXT NOT NULL
-      )
-    ''');
-
-    await db.execute('''
-      CREATE TABLE users (
-        id           TEXT PRIMARY KEY,
-        name         TEXT NOT NULL,
-        email        TEXT NOT NULL UNIQUE,
-        passwordHash TEXT NOT NULL,
-        createdAt    TEXT NOT NULL
-      )
-    ''');
-
-    // Default settings
-    await db.insert('settings', {'key': 'currency',               'value': 'USD'});
-    await db.insert('settings', {'key': 'monthly_budget',         'value': '3000'});
-    await db.insert('settings', {'key': 'ai_alerts_enabled',      'value': 'true'});
-    await db.insert('settings', {'key': 'weekly_summary_enabled', 'value': 'true'});
-    await db.insert('settings', {'key': 'last_anomaly_check',     'value': ''});
-    await db.insert('settings', {'key': 'current_user_id',        'value': ''});
-    await db.insert('settings', {'key': 'theme_mode',             'value': 'light'});
-    await db.insert('settings', {'key': 'locale_code',            'value': 'en'});
-  }
-
-  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
-      await db.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-          id           TEXT PRIMARY KEY,
-          name         TEXT NOT NULL,
-          email        TEXT NOT NULL UNIQUE,
-          passwordHash TEXT NOT NULL,
-          createdAt    TEXT NOT NULL
-        )
-      ''');
-      await db.insert(
-        'settings',
-        {'key': 'current_user_id', 'value': ''},
-        conflictAlgorithm: ConflictAlgorithm.ignore,
-      );
-    }
+  static Future<void> _putIfAbsent(
+      Box<String> box, String key, String value) async {
+    if (!box.containsKey(key)) await box.put(key, value);
   }
 
   // ── Transactions ──────────────────────────────────────────────
 
   Future<void> insertTransaction(model.Transaction t) async {
-    final db = await database;
-    await db.insert('transactions', t.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    await Hive.box<String>(_txBox).put(t.id, jsonEncode(_txToMap(t)));
   }
 
   Future<void> insertTransactions(List<model.Transaction> list) async {
-    if (list.isEmpty) return;
-    final db = await database;
-    final batch = db.batch();
-    for (final t in list) {
-      batch.insert('transactions', t.toMap(),
-          conflictAlgorithm: ConflictAlgorithm.replace);
-    }
-    await batch.commit(noResult: true);
+    final box     = Hive.box<String>(_txBox);
+    final entries = <String, String>{
+      for (final t in list) t.id: jsonEncode(_txToMap(t)),
+    };
+    await box.putAll(entries);
   }
 
   Future<List<model.Transaction>> getAllTransactions() async {
-    final db   = await database;
-    final maps = await db.query('transactions', orderBy: 'date DESC');
-    return maps.map(model.Transaction.fromMap).toList();
+    return _sortedTx(_allTxMaps());
   }
 
-  Future<List<model.Transaction>> getTransactionsByMonth(int year, int month) async {
-    final db    = await database;
-    final start = DateTime(year, month, 1).toIso8601String();
-    final end   = DateTime(year, month + 1, 1).toIso8601String();
-    final maps  = await db.query(
-      'transactions',
-      where:     'date >= ? AND date < ?',
-      whereArgs: [start, end],
-      orderBy:   'date DESC',
-    );
-    return maps.map(model.Transaction.fromMap).toList();
+  Future<List<model.Transaction>> getTransactionsByMonth(
+      int year, int month) async {
+    final start = DateTime(year, month);
+    final end   = DateTime(year, month + 1);
+    final maps  = _allTxMaps().where((m) {
+      final d = DateTime.parse(m['date'] as String);
+      return !d.isBefore(start) && d.isBefore(end);
+    }).toList();
+    return _sortedTx(maps);
   }
 
   Future<List<model.Transaction>> getTransactionsLastNDays(int days) async {
-    final db    = await database;
-    final since = DateTime.now().subtract(Duration(days: days)).toIso8601String();
-    final maps  = await db.query(
-      'transactions',
-      where:     'date >= ?',
-      whereArgs: [since],
-      orderBy:   'date DESC',
-    );
-    return maps.map(model.Transaction.fromMap).toList();
+    final since = DateTime.now().subtract(Duration(days: days));
+    final maps  = _allTxMaps()
+        .where((m) => DateTime.parse(m['date'] as String).isAfter(since))
+        .toList();
+    return _sortedTx(maps);
   }
 
   Future<void> updateTransaction(model.Transaction t) async {
-    final db = await database;
-    await db.update('transactions', t.toMap(),
-        where: 'id = ?', whereArgs: [t.id]);
+    await Hive.box<String>(_txBox).put(t.id, jsonEncode(_txToMap(t)));
   }
 
   Future<void> deleteTransaction(String id) async {
-    final db = await database;
-    await db.delete('transactions', where: 'id = ?', whereArgs: [id]);
+    await Hive.box<String>(_txBox).delete(id);
   }
 
   Future<void> deleteAllTransactions() async {
-    final db = await database;
-    await db.delete('transactions');
+    await Hive.box<String>(_txBox).clear();
   }
 
   // ── Users ─────────────────────────────────────────────────────
 
   Future<void> insertUser(User user) async {
-    final db = await database;
-    await db.insert('users', user.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.abort);
+    final exists = _allUserMaps().any(
+      (m) => (m['email'] as String).toLowerCase() ==
+          user.email.toLowerCase(),
+    );
+    if (exists) throw Exception('An account with this email already exists.');
+    await Hive.box<String>(_usersBox)
+        .put(user.id, jsonEncode(_userToMap(user)));
   }
 
   Future<User?> getUserByEmail(String email) async {
-    final db  = await database;
-    final res = await db.query(
-      'users',
-      where:     'email = ?',
-      whereArgs: [email.toLowerCase().trim()],
-      limit:     1,
-    );
-    return res.isEmpty ? null : User.fromMap(res.first);
+    final target = email.toLowerCase().trim();
+    final match  = _allUserMaps()
+        .where((m) => (m['email'] as String).toLowerCase() == target)
+        .toList();
+    return match.isEmpty ? null : _userFromMap(match.first);
   }
 
   Future<User?> getUserById(String id) async {
-    final db  = await database;
-    final res = await db.query(
-      'users',
-      where:     'id = ?',
-      whereArgs: [id],
-      limit:     1,
-    );
-    return res.isEmpty ? null : User.fromMap(res.first);
+    final raw = Hive.box<String>(_usersBox).get(id);
+    if (raw == null) return null;
+    return _userFromMap(jsonDecode(raw) as Map<String, dynamic>);
   }
 
   Future<void> updateUser(User user) async {
-    final db = await database;
-    await db.update('users', user.toMap(),
-        where: 'id = ?', whereArgs: [user.id]);
+    await Hive.box<String>(_usersBox)
+        .put(user.id, jsonEncode(_userToMap(user)));
   }
 
   // ── Settings ──────────────────────────────────────────────────
 
   Future<String?> getSetting(String key) async {
-    final db  = await database;
-    final res = await db.query('settings', where: 'key = ?', whereArgs: [key]);
-    return res.isEmpty ? null : res.first['value'] as String?;
+    return Hive.box<String>(_settingsBox).get(key);
   }
 
   Future<void> setSetting(String key, String value) async {
-    final db = await database;
-    await db.insert(
-      'settings',
-      {'key': key, 'value': value},
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await Hive.box<String>(_settingsBox).put(key, value);
   }
+
+  // ── Private helpers ───────────────────────────────────────────
+
+  List<Map<String, dynamic>> _allTxMaps() {
+    return Hive.box<String>(_txBox)
+        .values
+        .map((s) => jsonDecode(s) as Map<String, dynamic>)
+        .toList();
+  }
+
+  List<Map<String, dynamic>> _allUserMaps() {
+    return Hive.box<String>(_usersBox)
+        .values
+        .map((s) => jsonDecode(s) as Map<String, dynamic>)
+        .toList();
+  }
+
+  List<model.Transaction> _sortedTx(List<Map<String, dynamic>> maps) {
+    final list = maps.map(_txFromMap).toList();
+    list.sort((a, b) => b.date.compareTo(a.date));
+    return list;
+  }
+
+  Map<String, dynamic> _txToMap(model.Transaction t) => {
+        'id':           t.id,
+        'merchantName': t.merchantName,
+        'amount':       t.amount,
+        'type':         t.type.name,
+        'category':     t.category.name,
+        'date':         t.date.toIso8601String(),
+        'note':         t.note,
+        'isFlagged':    t.isFlagged,
+      };
+
+  model.Transaction _txFromMap(Map<String, dynamic> m) => model.Transaction(
+        id:           m['id'] as String,
+        merchantName: m['merchantName'] as String,
+        amount:       (m['amount'] as num).toDouble(),
+        type:         model.TransactionType.values
+            .byName(m['type'] as String),
+        category:     model.TransactionCategory.values
+            .byName(m['category'] as String),
+        date:         DateTime.parse(m['date'] as String),
+        note:         m['note'] as String?,
+        isFlagged:    (m['isFlagged'] as bool?) ?? false,
+      );
+
+  Map<String, dynamic> _userToMap(User u) => {
+        'id':           u.id,
+        'name':         u.name,
+        'email':        u.email,
+        'passwordHash': u.passwordHash,
+        'createdAt':    u.createdAt.toIso8601String(),
+      };
+
+  User _userFromMap(Map<String, dynamic> m) => User(
+        id:           m['id'] as String,
+        name:         m['name'] as String,
+        email:        m['email'] as String,
+        passwordHash: m['passwordHash'] as String,
+        createdAt:    DateTime.parse(m['createdAt'] as String),
+      );
 }

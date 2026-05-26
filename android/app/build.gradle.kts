@@ -10,7 +10,6 @@ layout.buildDirectory.set(rootProject.layout.buildDirectory.dir("app"))
 android {
     namespace = "com.example.flo"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "28.2.13676358"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

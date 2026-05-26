@@ -1,0 +1,15 @@
+Options -MultiViews
+RewriteEngine On
+RewriteBase /
+
+# Serve existing files and directories directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Route everything else to index.html (Flutter handles routing)
+RewriteRule . /index.html [L]
+
+# Correct MIME types for Flutter web assets
+AddType application/javascript .js
+AddType application/wasm .wasm
+AddType text/css .css
