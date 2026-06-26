@@ -5,6 +5,8 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/theme_extensions.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/utils/date_formatter.dart';
+import '../../../core/di/service_locator.dart';
+import '../../../data/services/export_service.dart';
 import '../../../data/models/transaction.dart';
 import '../../../data/models/category.dart';
 import '../../blocs/transactions/transactions_bloc.dart';
@@ -18,6 +20,7 @@ import '../analytics/analytics_screen.dart';
 import '../ai_assistant/ai_assistant_screen.dart';
 import '../profile/profile_screen.dart';
 import '../anomaly_detail/anomaly_detail_screen.dart';
+import '../../widgets/export_sheet.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -31,11 +34,10 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime _selectedMonth = DateTime.now();
 
   final List<Widget> _screens = const [
-    _HomeBody(),
-    AnalyticsScreen(),
-    SizedBox.shrink(), // placeholder for FAB
-    AiAssistantScreen(),
-    ProfileScreen(),
+    _HomeBody(),         // 0 — Home
+    AnalyticsScreen(),   // 1 — Analytics
+    AiAssistantScreen(), // 2 — AI Assistant
+    ProfileScreen(),     // 3 — Profile
   ];
 
   @override
@@ -99,10 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: _BottomNav(
         currentIndex: _currentIndex,
-        onTap: (i) {
-          if (i == 2) return;
-          setState(() => _currentIndex = i);
-        },
+        onTap: (i) => setState(() => _currentIndex = i),
       ),
     );
   }
@@ -139,6 +138,17 @@ class _HomeBody extends StatelessWidget {
                       Text('app.title'.tr(),
                           style: AppTextStyles.heading3(palette.primary)),
                       const Spacer(),
+                      IconButton(
+                        icon: Icon(Icons.file_download_outlined, color: palette.textSecondary),
+                        tooltip: 'Export expenses',
+                        onPressed: () => showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => ExportSheet(
+                              exportService: sl<ExportService>()),
+                        ),
+                      ),
                       IconButton(
                         icon: Icon(Icons.notifications_outlined, color: palette.textPrimary),
                         onPressed: () {},
@@ -506,11 +516,11 @@ class _BottomNav extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _NavItem(icon: Icons.home_outlined, activeIcon: Icons.home, label: 'home.nav_home'.tr(),         index: 0, current: currentIndex, onTap: onTap),
-            _NavItem(icon: Icons.bar_chart_outlined, activeIcon: Icons.bar_chart, label: 'home.nav_analytics'.tr(),   index: 1, current: currentIndex, onTap: onTap),
+            _NavItem(icon: Icons.home_outlined,         activeIcon: Icons.home,         label: 'home.nav_home'.tr(),      index: 0, current: currentIndex, onTap: onTap),
+            _NavItem(icon: Icons.bar_chart_outlined,    activeIcon: Icons.bar_chart,    label: 'home.nav_analytics'.tr(), index: 1, current: currentIndex, onTap: onTap),
             const SizedBox(width: 48),
-            _NavItem(icon: Icons.auto_awesome_outlined, activeIcon: Icons.auto_awesome, label: 'home.nav_ai'.tr(), index: 3, current: currentIndex, onTap: onTap),
-            _NavItem(icon: Icons.person_outline, activeIcon: Icons.person, label: 'home.nav_profile'.tr(),      index: 4, current: currentIndex, onTap: onTap),
+            _NavItem(icon: Icons.auto_awesome_outlined, activeIcon: Icons.auto_awesome, label: 'home.nav_ai'.tr(),        index: 2, current: currentIndex, onTap: onTap),
+            _NavItem(icon: Icons.person_outline,        activeIcon: Icons.person,       label: 'home.nav_profile'.tr(),   index: 3, current: currentIndex, onTap: onTap),
           ],
         ),
       ),

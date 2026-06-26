@@ -84,7 +84,7 @@ class AiChatBloc extends Bloc<AiChatEvent, AiChatState> {
     if (e is AiFailure) {
       final msg = e.message;
       if (msg.contains('401') || msg.contains('403')) {
-        return 'API key is missing or invalid. Add OPENROUTER_API_KEY to your .env file.';
+        return 'AI service unavailable. Please try again later.';
       }
       if (msg.contains('429')) {
         return 'Rate limit reached. Please wait a moment and try again.';

@@ -54,6 +54,7 @@ class _AiAssistantScreenState extends State<AiAssistantScreen> {
     return Scaffold(
       backgroundColor: palette.background,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Row(children: [
           Container(
             width: 32, height: 32,
@@ -111,7 +112,7 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

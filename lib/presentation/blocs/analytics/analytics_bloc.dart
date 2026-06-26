@@ -15,24 +15,33 @@ class AnalyticsBloc extends Bloc<AnalyticsEvent, AnalyticsState> {
     emit(const AnalyticsLoading());
     try {
       final transactions = await _repo.getByMonth(event.year, event.month);
-      final expenses = transactions.where((t) => t.type == TransactionType.expense).toList();
+
+      // Only expense-type transactions — income should never appear in
+      // spending analytics. Also exclude the "income" category as a
+      // belt-and-suspenders guard against mis-categorised transactions.
+      final expenses = transactions.where((t) =>
+          t.type == TransactionType.expense &&
+          t.category != TransactionCategory.income).toList();
 
       final breakdown = <TransactionCategory, double>{};
       for (final t in expenses) {
         breakdown[t.category] = (breakdown[t.category] ?? 0) + t.amount;
       }
 
-      // Last 6 months totals
+      // Last 6 months expense totals for the bar chart
       final monthlyTotals = <double>[];
       for (int i = 5; i >= 0; i--) {
-        final d = DateTime(event.year, event.month - i, 1);
+        final d    = DateTime(event.year, event.month - i, 1);
         final list = await _repo.getByMonth(d.year, d.month);
         monthlyTotals.add(list
-            .where((t) => t.type == TransactionType.expense)
+            .where((t) =>
+                t.type == TransactionType.expense &&
+                t.category != TransactionCategory.income)
             .fold(0.0, (s, t) => s + t.amount));
       }
 
-      emit(AnalyticsLoaded(categoryBreakdown: breakdown, monthlyTotals: monthlyTotals));
+      emit(AnalyticsLoaded(
+          categoryBreakdown: breakdown, monthlyTotals: monthlyTotals));
     } catch (e) {
       emit(AnalyticsError(e.toString()));
     }

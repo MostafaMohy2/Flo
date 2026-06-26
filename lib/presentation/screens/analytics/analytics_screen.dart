@@ -31,7 +31,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     final palette = context.palette;
     return Scaffold(
       backgroundColor: palette.background,
-      appBar: AppBar(title: Text('analytics.title'.tr())),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text('analytics.title'.tr()),
+      ),
       body: BlocBuilder<AnalyticsBloc, AnalyticsState>(
         builder: (context, state) {
           if (state is AnalyticsLoading || state is AnalyticsInitial) {

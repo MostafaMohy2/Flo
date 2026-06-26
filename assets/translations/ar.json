@@ -9,6 +9,9 @@
     "tagline": "أموالك، واضحة أخيراً"
   },
 
+  "nav": {
+    "transactions": "المعاملات"
+  },
   "home": {
     "greeting": "صباح الخير",
     "overview": "نظرة عامة",
@@ -20,6 +23,7 @@
     "empty_transactions": "لا توجد معاملات بعد",
     "view_details": "عرض التفاصيل ←",
     "nav_home": "الرئيسية",
+    "nav_transactions": "المعاملات",
     "nav_analytics": "التحليلات",
     "nav_ai": "مساعد الذكاء",
     "nav_profile": "الملف الشخصي"

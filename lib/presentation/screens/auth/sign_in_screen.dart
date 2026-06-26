@@ -45,7 +45,8 @@ class _SignInScreenState extends State<SignInScreen> {
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {
-            Navigator.of(context).pushReplacementNamed(AppRouter.home);
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              AppRouter.home, (route) => false);
           }
           if (state is AuthFailure) {
             ScaffoldMessenger.of(context).showSnackBar(

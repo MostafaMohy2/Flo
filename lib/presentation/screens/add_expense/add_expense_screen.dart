@@ -39,17 +39,38 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   Future<void> _scanReceipt() async {
     final picker = ImagePicker();
-    final image  = await picker.pickImage(source: ImageSource.camera);
+    final image  = await picker.pickImage(
+      source: ImageSource.camera,
+      maxWidth: 1280,
+      maxHeight: 1280,
+      imageQuality: 80, // compress from ~5MB to ~200-400KB
+    );
     if (image == null) return;
 
     setState(() => _isScanning = true);
-    final result = await _ocr.parseReceipt(image.path);
-    setState(() => _isScanning = false);
-
-    if (result != null) {
-      if (result['merchantName'] != null) _merchantCtrl.text = result['merchantName'];
-      if (result['amount'] != null) _amountCtrl.text = (result['amount'] as double).toStringAsFixed(2);
-      if (result['date'] != null) _date = result['date'];
+    try {
+      final result = await _ocr.parseReceipt(image);
+      if (result != null) {
+        if (result['merchantName'] != null) _merchantCtrl.text = result['merchantName'];
+        if (result['amount']       != null) _amountCtrl.text   = (result['amount'] as double).toStringAsFixed(2);
+        if (result['date']         != null) setState(() => _date = result['date']);
+        if (result['category']     != null) {
+          try {
+            _category = TransactionCategory.values
+                .byName(result['category'].toString().toLowerCase());
+          } catch (_) {}
+        }
+        setState(() => _isManual = true);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Could not read receipt: $e'),
+          behavior: SnackBarBehavior.floating,
+        ));
+      }
+    } finally {
+      if (mounted) setState(() => _isScanning = false);
     }
   }
 
@@ -104,7 +125,14 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     final palette = context.palette;
     return Scaffold(
       backgroundColor: palette.background,
-      appBar: AppBar(title: Text('add_expense.title'.tr())),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text('add_expense.title'.tr()),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),

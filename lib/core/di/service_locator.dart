@@ -1,9 +1,10 @@
+import 'package:flo/core/constants/api_constants.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../data/services/local_db_service.dart';
 import '../../data/services/ai_service.dart';
 import '../../data/services/ocr_service.dart';
+import '../../data/services/export_service.dart';
 import '../../data/repositories/transaction_repository.dart';
 import '../../data/repositories/settings_repository.dart';
 import '../../data/repositories/ai_repository.dart';
@@ -30,11 +31,15 @@ Future<void> setupLocator() async {
   sl.registerLazySingleton<LocalDbService>(() => LocalDbService());
 
   sl.registerLazySingleton<AiService>(() => AiService(
-        apiKey: dotenv.env['GROQ_API_KEY'] ?? '',
+        apiKey: ApiConstants.apiKey,
         dio: sl<Dio>(),
       ));
 
   sl.registerLazySingleton<OcrService>(() => OcrService());
+
+  sl.registerLazySingleton<ExportService>(
+    () => ExportService(sl<TransactionRepository>()),
+  );
 
   // ── Repositories ──────────────────────────────────────────────
   sl.registerLazySingleton<TransactionRepository>(

@@ -14,7 +14,10 @@ dependencies:
   flutter_bloc: ^8.1.5
   equatable: ^2.0.5
 
-  # Local database (web + mobile)
+  # Local database — sqflite on mobile, hive on web
+  sqflite: ^2.3.2
+  path: ^1.9.0
+  path_provider: ^2.1.2
   hive_flutter: ^1.1.0
 
   # Networking
@@ -26,19 +29,22 @@ dependencies:
   # Date & currency formatting
   intl: ^0.20.2
 
-  # Receipt scanner (mobile only — OCR stubbed on web)
+  # Receipt scanner
   image_picker: ^1.1.2
+
+  # Excel export
+  syncfusion_flutter_xlsio: ^33.2.8
+  share_plus: ^10.0.0
+
+  # Responsive
+  responsive_framework: ^1.5.1
 
   # Utilities
   uuid: ^4.4.0
-  flutter_dotenv: ^5.1.0
   get_it: ^8.0.2
   crypto: ^3.0.3
   easy_localization: ^3.0.8
   shared_preferences: ^2.3.2
-  device_preview: ^1.2.0
-
-
 
 dev_dependencies:
   flutter_test:
@@ -48,7 +54,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - .env
     - assets/translations/
     - assets/icon/
 

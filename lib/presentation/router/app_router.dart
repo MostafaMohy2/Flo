@@ -20,11 +20,14 @@ import '../screens/profile/profile_screen.dart';
 import '../../core/di/service_locator.dart';
 
 class AppRouter {
+  // '/' is the single initial route — Flutter pushes only one route on startup.
+  // Every subsequent navigation uses pushReplacementNamed so the stack
+  // never grows beyond one route → no back arrow anywhere.
   static const String initialRoute  = '/';
-  static const String home          = '/home';
+  static const String onboarding    = '/';
   static const String signIn        = '/sign-in';
   static const String signUp        = '/sign-up';
-  static const String onboarding    = '/onboarding';
+  static const String home          = '/home';
   static const String addExpense    = '/add-expense';
   static const String transactions  = '/transactions';
   static const String analytics     = '/analytics';
@@ -34,26 +37,27 @@ class AppRouter {
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case initialRoute:
-      case signIn:
-        return _fade(const SignInScreen());
-
-      case signUp:
-        return _slide(const SignUpScreen());
-
-      case onboarding:
+      case '/':
         return _fade(const OnboardingScreen());
 
-      case home:
+      case '/sign-in':
+        return _fade(const SignInScreen());
+
+      case '/sign-up':
+        return _slide(const SignUpScreen());
+
+      case '/home':
         return _fade(
           MultiBlocProvider(
             providers: [
               BlocProvider(
-                create: (_) => sl<TransactionsBloc>()..add(const LoadTransactions()),
+                create: (_) =>
+                    sl<TransactionsBloc>()..add(const LoadTransactions()),
               ),
               BlocProvider(create: (_) => sl<AiChatBloc>()),
               BlocProvider(
-                create: (_) => sl<AnomalyBloc>()..add(const CheckAnomalies()),
+                create: (_) =>
+                    sl<AnomalyBloc>()..add(const CheckAnomalies()),
               ),
               BlocProvider(create: (_) => sl<AnalyticsBloc>()),
             ],
@@ -61,31 +65,29 @@ class AppRouter {
           ),
         );
 
-      case addExpense:
+      case '/add-expense':
         return _slide(const AddExpenseScreen());
 
-      case transactions:
+      case '/transactions':
         return _slide(const TransactionsScreen());
 
-      case analytics:
+      case '/analytics':
         return _slide(const AnalyticsScreen());
 
-      case aiAssistant:
+      case '/ai-assistant':
         return _slide(const AiAssistantScreen());
 
-      case anomalyDetail:
+      case '/anomaly-detail':
         final result = settings.arguments as AnomalyResult;
         return _slide(AnomalyDetailScreen(result: result));
 
-      case profile:
+      case '/profile':
         return _slide(const ProfileScreen());
 
       default:
-        return _fade(const SignInScreen());
+        return _fade(const OnboardingScreen());
     }
   }
-
-  // ── Transitions ───────────────────────────────────────────────
 
   static PageRoute _fade(Widget page) => PageRouteBuilder(
         pageBuilder: (_, __, ___) => page,
@@ -100,7 +102,8 @@ class AppRouter {
           position: Tween<Offset>(
             begin: const Offset(1.0, 0.0),
             end: Offset.zero,
-          ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut)),
+          ).animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOut)),
           child: child,
         ),
         transitionDuration: const Duration(milliseconds: 250),

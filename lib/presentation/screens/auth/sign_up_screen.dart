@@ -47,18 +47,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final palette = context.palette;
     return Scaffold(
       backgroundColor: palette.background,
-      appBar: AppBar(
-        backgroundColor: palette.background,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
+      // No AppBar — back arrow removed intentionally.
+      // User navigates back via "Already have an account? Sign in" link below.
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {
-            Navigator.of(context).pushReplacementNamed(AppRouter.home);
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              AppRouter.home, (route) => false);
           }
           if (state is AuthFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -80,18 +75,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 40),
 
                   Text('auth.create_account_title'.tr(),
                       style: AppTextStyles.heading1(palette.textPrimary)),
                   const SizedBox(height: 6),
-                  Text(
-                    'auth.create_account_subtitle'.tr(),
-                    style: AppTextStyles.bodyMedium(palette.textSecondary),
-                  ),
+                  Text('auth.create_account_subtitle'.tr(),
+                      style: AppTextStyles.bodyMedium(palette.textSecondary)),
                   const SizedBox(height: 36),
 
-                  // Full name
                   _Label('auth.full_name'.tr()),
                   const SizedBox(height: 8),
                   TextFormField(
@@ -103,16 +95,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       prefixIcon: const Icon(Icons.person_outline),
                     ),
                     validator: (v) {
-                      if (v == null || v.trim().isEmpty) {
-                        return 'auth.name_required'.tr();
-                      }
+                      if (v == null || v.trim().isEmpty) return 'auth.name_required'.tr();
                       if (v.trim().length < 2) return 'auth.name_short'.tr();
                       return null;
                     },
                   ),
                   const SizedBox(height: 16),
 
-                  // Email
                   _Label('auth.email'.tr()),
                   const SizedBox(height: 8),
                   TextFormField(
@@ -125,15 +114,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     validator: (v) {
                       if (v == null || v.trim().isEmpty) return 'auth.email_required'.tr();
-                      if (!v.contains('@') || !v.contains('.')) {
-                        return 'auth.email_invalid'.tr();
-                      }
+                      if (!v.contains('@') || !v.contains('.')) return 'auth.email_invalid'.tr();
                       return null;
                     },
                   ),
                   const SizedBox(height: 16),
 
-                  // Password
                   _Label('auth.password'.tr()),
                   const SizedBox(height: 8),
                   TextFormField(
@@ -150,21 +136,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               : Icons.visibility_off_outlined,
                           color: palette.textSecondary,
                         ),
-                        onPressed: () =>
-                            setState(() => _obscurePass = !_obscurePass),
+                        onPressed: () => setState(() => _obscurePass = !_obscurePass),
                       ),
                     ),
                     validator: (v) {
                       if (v == null || v.isEmpty) return 'auth.password_required'.tr();
-                      if (v.length < 6) {
-                        return 'auth.password_length'.tr();
-                      }
+                      if (v.length < 6) return 'auth.password_length'.tr();
                       return null;
                     },
                   ),
                   const SizedBox(height: 16),
 
-                  // Confirm password
                   _Label('auth.confirm_password'.tr()),
                   const SizedBox(height: 8),
                   TextFormField(
@@ -194,7 +176,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   const SizedBox(height: 32),
 
-                  // Sign up button
                   BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, state) {
                       final isLoading = state is AuthLoading;
@@ -206,8 +187,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ? const SizedBox(
                                   width: 20, height: 20,
                                   child: CircularProgressIndicator(
-                                      color: Colors.white, strokeWidth: 2),
-                                )
+                                      color: Colors.white, strokeWidth: 2))
                               : Text('auth.create_account'.tr()),
                         ),
                       );
@@ -215,13 +195,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Already have account
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Text('auth.have_account'.tr(),
                         style: AppTextStyles.bodyMedium(palette.textSecondary)),
                     GestureDetector(
                       onTap: () => Navigator.of(context).pop(),
-                      child: Text('auth.sign_in'.tr(),
+                      child: Text(' ${'auth.sign_in'.tr()}',
                           style: AppTextStyles.bodyMedium(palette.primary)
                               .copyWith(fontWeight: FontWeight.w600)),
                     ),

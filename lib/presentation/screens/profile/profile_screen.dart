@@ -114,7 +114,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final palette = context.palette;
     return Scaffold(
       backgroundColor: palette.background,
-      appBar: AppBar(title: Text('profile.title'.tr())),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text('profile.title'.tr()),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
